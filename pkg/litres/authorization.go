@@ -17,6 +17,10 @@ import (
 )
 
 func (l *Litres) authorization() {
+    if len(l.sid) > 0 {
+        return
+    }
+
 	data := url.Values{}
 	data.Set("login", l.Login)
 	data.Set("pwd", l.Password)
@@ -58,22 +62,25 @@ func (l *Litres) authorization() {
 		if err != nil {
 			return
 		}
-		for _, attr := range htmlquery.Find(doc, "//form")[0].Attr {
-			if attr.Key == "class" && strings.Contains(attr.Val, "captcha_block_form") {
-				logger.Work.Error("[litres.authorization] the lock worked, I can't bypass the captcha yet, attempt to open a page with a captcha in your browser", zap.String("link", consts.BaseUrl))
-				tools.OpenBrowser(consts.BaseUrl)
-				err := os.Remove(l.tmpFile)
-				if err != nil {
-					logger.Work.Error("[litres.remove.tmp] couldn't delete temporary file", zap.Error(err))
-					return
-				}
-				logger.Work.Info("[litres.remove.tmp] temporary file", zap.String("deleted", l.tmpFile))
-				return
-			} else {
-				logger.Work.Debug("[litres.authorization]", zap.Any("response", body))
-			}
-		}
-	}
+
+        possibleCapcha := htmlquery.Find(doc, "//form")
+        if len(possibleCapcha) > 0 {
+            for _, attr := range htmlquery.Find(doc, "//form")[0].Attr {
+                if attr.Key == "class" && strings.Contains(attr.Val, "captcha_block_form") {
+                    logger.Work.Error("[litres.authorization] the lock worked, I can't bypass the captcha yet, attempt to open a page with a captcha in your browser", zap.String("link", consts.BaseUrl))
+                    tools.OpenBrowser(consts.BaseUrl)
+                    err := os.Remove(l.tmpFile)
+                    if err != nil {
+                        logger.Work.Error("[litres.remove.tmp] couldn't delete temporary file", zap.Error(err))
+                        return
+                    }
+                    logger.Work.Info("[litres.remove.tmp] temporary file", zap.String("deleted", l.tmpFile))
+                    return
+                }
+            }
+        }
+        logger.Work.Debug("[litres.authorization]", zap.Any("response", body))
+    }
 
 	catalitAuthorizationOk := model.CatalitAuthorizationOk{}
 	if err := xml.Unmarshal(body, &catalitAuthorizationOk); err != nil {
