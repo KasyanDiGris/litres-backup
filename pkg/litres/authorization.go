@@ -65,7 +65,7 @@ func (l *Litres) authorization() {
 
         possibleCapcha := htmlquery.Find(doc, "//form")
         if len(possibleCapcha) > 0 {
-            for _, attr := range htmlquery.Find(doc, "//form")[0].Attr {
+            for _, attr := range possibleCapcha[0].Attr {
                 if attr.Key == "class" && strings.Contains(attr.Val, "captcha_block_form") {
                     logger.Work.Error("[litres.authorization] the lock worked, I can't bypass the captcha yet, attempt to open a page with a captcha in your browser", zap.String("link", consts.BaseUrl))
                     tools.OpenBrowser(consts.BaseUrl)
