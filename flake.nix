@@ -13,7 +13,7 @@
       version = "0.0.0";
 
       src = ./.;
-      vendorHash = "sha256-5LO+Mq2dOwXYmciLkvxDUg6L5n0kHVUWI6rq9v3Gvvs=";
+      vendorHash = "sha256-IyM5+xPrkORQe40FB357a4XkLDr4HABbuvx9puHDHa8=";
     };
   in
   {
