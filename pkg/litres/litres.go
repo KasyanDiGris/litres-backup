@@ -2,7 +2,6 @@ package litres
 
 import (
 	"bytes"
-	"fmt"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -90,7 +89,6 @@ func (l *Litres) download(hubID, filePath string, fileSize int) (bodyBook string
 	body, _ := ioutil.ReadAll(res.Body)
 	if strings.Contains(string(body), "catalit-download-drm-failed") {
 		logger.Work.Error("At the request of the copyright holder, this book is not available for download as a file", zap.String("name", filepath.Base(filePath)), zap.String("hubID", hubID))
-		tools.OpenBrowser(fmt.Sprintf("http://www.litres.ru/pages/biblio_book/?art=%s", hubID))
 		return
 	}
 
