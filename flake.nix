@@ -10,7 +10,7 @@
 
     litres-backup-package = pkgs.buildGoModule {
       pname = "litres-backup";
-      version = "0.0.0";
+      version = "git";
 
       src = ./.;
       vendorHash = "sha256-IyM5+xPrkORQe40FB357a4XkLDr4HABbuvx9puHDHa8=";
