@@ -163,7 +163,13 @@ func (l *Litres) downloadBooks(list *model.CatalitFb2Books, title, id *string) (
 			log.Println("Filename:", filename)
 		}
 
-		return l.download(file.HubID, path.Join(l.Library, filename), file.GetSizeByFileType(l.Format))
+
+        targetFile := path.Join(l.Library, filename)
+        if tools.FileNotExists(targetFile) {
+            return l.download(file.HubID, targetFile, file.GetSizeByFileType(l.Format))
+        }
+
+        return "", nil
 	}
 
 	if id != nil && *id != "" {
